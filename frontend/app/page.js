@@ -1,274 +1,236 @@
 "use client"
-import { Layout, Card, Row, Col, Statistic, Button, Typography, Space, Avatar, List, Progress, Tag } from "antd"
-import {
-  UserOutlined,
-  TeamOutlined,
-  TrophyOutlined,
-  DollarOutlined,
-  PlusOutlined,
-  CalendarOutlined,
-  FireOutlined,
-  RiseOutlined,
-  BarChartOutlined,
-  SettingOutlined,
-  BellOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-} from "@ant-design/icons"
-import { useState } from "react"
 
-const { Header, Content, Sider } = Layout
-const { Title, Text, Paragraph } = Typography
+import { Layout, Row, Col, Card, Button, Typography, Space, Menu } from "antd"
+import { CheckCircleOutlined, FireOutlined, UserOutlined, DollarOutlined, TeamOutlined } from "@ant-design/icons"
+import Link from "next/link"
 
-export default function Home() {
-  const [collapsed, setCollapsed] = useState(false)
+const { Header, Content, Footer } = Layout
+const { Title, Paragraph, Text } = Typography
 
-  // Sample data
-  const stats = [
-    {
-      title: "Total Members",
-      value: 1234,
-      prefix: <UserOutlined />,
-      suffix: "Active",
-      color: "#1890ff",
-    },
-    {
-      title: "Monthly Revenue",
-      value: 45600000,
-      prefix: <DollarOutlined />,
-      suffix: "IDR",
-      color: "#52c41a",
-    },
-    {
-      title: "Personal Trainers",
-      value: 24,
-      prefix: <TeamOutlined />,
-      suffix: "Available",
-      color: "#722ed1",
-    },
-    {
-      title: "Active Sessions",
-      value: 156,
-      prefix: <TrophyOutlined />,
-      suffix: "Today",
-      color: "#fa8c16",
-    },
-  ]
+const packages = [
+  {
+    name: "Basic Package",
+    price: "Rp 150.000",
+    features: ["Full Gym Access", "Cardio & Strength Equipment", "Locker Room Access", "Free Wi-Fi"],
+    color: "#1890ff",
+  },
+  {
+    name: "Standard Package",
+    price: "Rp 250.000",
+    features: ["All Basic Features", "Unlimited Group Classes", "Personalized Workout Plan", "Nutritional Guidance"],
+    color: "#52c41a",
+  },
+  {
+    name: "Premium Package",
+    price: "Rp 450.000",
+    features: [
+      "All Standard Features",
+      "5 Personal Trainer Sessions/Month",
+      "Priority Booking",
+      "Exclusive Member Events",
+    ],
+    color: "#722ed1",
+  },
+]
 
-  const recentMembers = [
-    { name: "John Doe", package: "Premium", status: "Active", avatar: "J", id: "MBR001" },
-    { name: "Jane Smith", package: "Basic", status: "Active", avatar: "J", id: "MBR002" },
-    { name: "Mike Johnson", package: "Premium", status: "Expired", avatar: "M", id: "MBR003" },
-    { name: "Sarah Wilson", package: "Standard", status: "Active", avatar: "S", id: "MBR004" },
-  ]
-
-  const packageStats = [
-    { name: "Basic Package", percentage: 45, color: "#1890ff", count: 556 },
-    { name: "Standard Package", percentage: 35, color: "#52c41a", count: 432 },
-    { name: "Premium Package", percentage: 20, color: "#722ed1", count: 246 },
-  ]
-
-  const menuItems = [
-    { key: "dashboard", icon: <BarChartOutlined />, label: "Dashboard" },
-    { key: "members", icon: <UserOutlined />, label: "Members" },
-    { key: "trainers", icon: <TeamOutlined />, label: "Personal Trainers" },
-    { key: "schedules", icon: <CalendarOutlined />, label: "Schedules" },
-    { key: "transactions", icon: <DollarOutlined />, label: "Transactions" },
-    { key: "packages", icon: <TrophyOutlined />, label: "Packages" },
-    { key: "settings", icon: <SettingOutlined />, label: "Settings" },
-  ]
-
+export default function LandingPage() {
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <Sider trigger={null} collapsible collapsed={collapsed} className="gym-sidebar" width={250}>
+      <Header
+        style={{
+          background: "#fff",
+          padding: "0 24px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          position: "fixed",
+          width: "100%",
+          zIndex: 1000,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <FireOutlined style={{ fontSize: "24px", color: "#1890ff", marginRight: "12px" }} />
+          <Title level={3} style={{ margin: 0, color: "#1890ff" }}>
+            GymEase
+          </Title>
+        </div>
+        <Menu
+          mode="horizontal"
+          defaultSelectedKeys={["home"]}
+          style={{ flex: 1, minWidth: 0, borderBottom: "none", justifyContent: "flex-end" }}
+        >
+          <Menu.Item key="home">
+            <a href="#home">Home</a>
+          </Menu.Item>
+          <Menu.Item key="features">
+            <a href="#features">Features</a>
+          </Menu.Item>
+          <Menu.Item key="packages">
+            <a href="#packages">Packages</a>
+          </Menu.Item>
+          <Menu.Item key="contact">
+            <a href="#contact">Contact</a>
+          </Menu.Item>
+        </Menu>
+        <Link href="/dashboard">
+          <Button type="primary">Go to Dashboard</Button>
+        </Link>
+      </Header>
+
+      <Content style={{ paddingTop: 64 }}>
+        {/* Hero Section */}
         <div
+          id="home"
           style={{
-            padding: collapsed ? "16px 8px" : "16px 24px",
-            borderBottom: "1px solid #f0f0f0",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: collapsed ? "center" : "flex-start",
+            textAlign: "center",
+            padding: "100px 20px",
+            background: "linear-gradient(135deg, #e0f7fa 0%, #bbdefb 100%)",
+            marginBottom: "40px",
           }}
         >
-          <FireOutlined
-            style={{
-              fontSize: "24px",
-              color: "#1890ff",
-              marginRight: collapsed ? 0 : "12px",
-            }}
-          />
-          {!collapsed && (
-            <Title level={4} style={{ margin: 0, color: "#1890ff" }}>
-              GymEase
-            </Title>
-          )}
-        </div>
-
-        <div style={{ padding: "16px 8px" }}>
-          <Space direction="vertical" style={{ width: "100%" }} size="small">
-            {menuItems.map((item) => (
-              <Button
-                key={item.key}
-                type={item.key === "dashboard" ? "primary" : "text"}
-                icon={item.icon}
-                block
-                style={{
-                  textAlign: "left",
-                  justifyContent: collapsed ? "center" : "flex-start",
-                  height: "40px",
-                }}
-              >
-                {!collapsed && item.label}
-              </Button>
-            ))}
-          </Space>
-        </div>
-      </Sider>
-
-      <Layout>
-        {/* Header */}
-        <Header
-          style={{
-            padding: "0 24px",
-            background: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-            zIndex: 1,
-          }}
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: "16px" }}
-          />
-
+          <Title level={1} style={{ color: "#1890ff", marginBottom: "16px", fontSize: "3.5em" }}>
+            Transform Your Body, Transform Your Life with GymEase
+          </Title>
+          <Paragraph style={{ fontSize: "1.2em", maxWidth: "900px", margin: "0 auto 40px" }}>
+            Your ultimate partner for a healthier, stronger you. We provide state-of-the-art facilities, expert
+            trainers, and flexible membership options to fit your lifestyle.
+          </Paragraph>
           <Space size="large">
-            <Button type="text" icon={<BellOutlined />} size="large" />
-            <Space>
-              <Avatar icon={<UserOutlined />} />
-              <span>Admin User</span>
-            </Space>
+            <Button type="primary" size="large" href="#packages" style={{ height: "50px", fontSize: "1.1em" }}>
+              Explore Our Packages
+            </Button>
+            <Button size="large" href="#contact" style={{ height: "50px", fontSize: "1.1em" }}>
+              Contact Us
+            </Button>
           </Space>
-        </Header>
+        </div>
 
-        {/* Main Content */}
-        <Content className="gym-content" style={{ padding: "24px" }}>
-          <div className="fade-in">
-            <div style={{ marginBottom: "24px" }}>
-              <Title level={2}>Dashboard</Title>
-              <Paragraph>Welcome to GymEase - Your complete gym management solution</Paragraph>
-            </div>
+        {/* About Section */}
+        <div id="features" style={{ padding: "60px 20px", textAlign: "center", marginBottom: "40px" }}>
+          <Title level={2} style={{ marginBottom: "40px", fontSize: "2.5em" }}>
+            Why Choose GymEase?
+          </Title>
+          <Row gutter={[32, 32]} justify="center">
+            <Col xs={24} md={8}>
+              <Card className="gym-card" style={{ height: "100%", padding: "20px" }}>
+                <Space direction="vertical" align="center">
+                  <UserOutlined style={{ fontSize: "60px", color: "#1890ff", marginBottom: "16px" }} />
+                  <Title level={4} style={{ fontSize: "1.5em" }}>
+                    Expert Trainers
+                  </Title>
+                  <Paragraph style={{ fontSize: "1.1em" }}>
+                    Our certified personal trainers are dedicated to helping you achieve your fitness goals.
+                  </Paragraph>
+                </Space>
+              </Card>
+            </Col>
+            <Col xs={24} md={8}>
+              <Card className="gym-card" style={{ height: "100%", padding: "20px" }}>
+                <Space direction="vertical" align="center">
+                  <DollarOutlined style={{ fontSize: "60px", color: "#52c41a", marginBottom: "16px" }} />
+                  <Title level={4} style={{ fontSize: "1.5em" }}>
+                    Flexible Packages
+                  </Title>
+                  <Paragraph style={{ fontSize: "1.1em" }}>
+                    Choose from a variety of membership options designed to suit every need and budget.
+                  </Paragraph>
+                </Space>
+              </Card>
+            </Col>
+            <Col xs={24} md={8}>
+              <Card className="gym-card" style={{ height: "100%", padding: "20px" }}>
+                <Space direction="vertical" align="center">
+                  <TeamOutlined style={{ fontSize: "60px", color: "#fa8c16", marginBottom: "16px" }} />
+                  <Title level={4} style={{ fontSize: "1.5em" }}>
+                    Supportive Community
+                  </Title>
+                  <Paragraph style={{ fontSize: "1.1em" }}>
+                    Join a vibrant community of fitness enthusiasts and stay motivated together.
+                  </Paragraph>
+                </Space>
+              </Card>
+            </Col>
+          </Row>
+        </div>
 
-            {/* Statistics Cards */}
-            <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
-              {stats.map((stat, index) => (
-                <Col xs={24} sm={12} lg={6} key={index}>
-                  <Card className="gym-card">
-                    <Statistic
-                      title={stat.title}
-                      value={stat.value}
-                      prefix={stat.prefix}
-                      suffix={stat.suffix}
-                      valueStyle={{ color: stat.color }}
-                    />
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-
-            <Row gutter={[16, 16]}>
-              {/* Recent Members */}
-              <Col xs={24} lg={12}>
-                <Card title="Recent Members" className="gym-card" extra={<Button type="link">View All</Button>}>
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={recentMembers}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          avatar={<Avatar style={{ backgroundColor: "#1890ff" }}>{item.avatar}</Avatar>}
-                          title={
-                            <div>
-                              <Text strong>{item.name}</Text>
-                              <Text type="secondary" style={{ marginLeft: "8px", fontSize: "12px" }}>
-                                {item.id}
-                              </Text>
-                            </div>
-                          }
-                          description={item.package}
-                        />
-                        <Tag color={item.status === "Active" ? "green" : "red"}>{item.status}</Tag>
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-              </Col>
-
-              {/* Package Distribution */}
-              <Col xs={24} lg={12}>
-                <Card title="Package Distribution" className="gym-card">
-                  <Space direction="vertical" style={{ width: "100%" }} size="large">
-                    {packageStats.map((pkg, index) => (
-                      <div key={index}>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                          <Text>{pkg.name}</Text>
-                          <Space>
-                            <Text type="secondary">{pkg.count} members</Text>
-                            <Text strong>{pkg.percentage}%</Text>
-                          </Space>
-                        </div>
-                        <Progress percent={pkg.percentage} strokeColor={pkg.color} showInfo={false} />
-                      </div>
+        {/* Packages Section */}
+        <div id="packages" style={{ padding: "60px 20px", textAlign: "center", marginBottom: "40px" }}>
+          <Title level={2} style={{ marginBottom: "40px", fontSize: "2.5em" }}>
+            Our Membership Packages
+          </Title>
+          <Row gutter={[32, 32]} justify="center">
+            {packages.map((pkg, index) => (
+              <Col xs={24} md={8} key={index}>
+                <Card
+                  className="gym-card"
+                  title={
+                    <Title level={3} style={{ color: pkg.color, margin: 0, fontSize: "1.8em" }}>
+                      {pkg.name}
+                    </Title>
+                  }
+                  style={{ borderColor: pkg.color, borderWidth: "3px", height: "100%", borderRadius: "12px" }}
+                  headStyle={{ borderBottom: `3px solid ${pkg.color}`, padding: "20px", fontSize: "1.2em" }}
+                  bodyStyle={{ padding: "30px" }}
+                >
+                  <Title level={2} style={{ marginBottom: "24px", fontSize: "2.5em" }}>
+                    {pkg.price}
+                    <Text type="secondary" style={{ fontSize: "0.6em", marginLeft: "8px" }}>
+                      / month
+                    </Text>
+                  </Title>
+                  <ul style={{ listStyle: "none", padding: 0, marginBottom: "32px", textAlign: "left" }}>
+                    {pkg.features.map((feature, i) => (
+                      <li key={i} style={{ marginBottom: "12px", display: "flex", alignItems: "center" }}>
+                        <CheckCircleOutlined style={{ color: pkg.color, marginRight: "12px", fontSize: "1.2em" }} />
+                        <Paragraph style={{ margin: 0, fontSize: "1.1em" }}>{feature}</Paragraph>
+                      </li>
                     ))}
-                  </Space>
+                  </ul>
+                  <Button
+                    type="primary"
+                    size="large"
+                    block
+                    style={{ background: pkg.color, borderColor: pkg.color, height: "55px", fontSize: "1.2em" }}
+                  >
+                    Get Started
+                  </Button>
                 </Card>
               </Col>
-            </Row>
+            ))}
+          </Row>
+        </div>
 
-            {/* Quick Actions */}
-            <Card title="Quick Actions" className="gym-card" style={{ marginTop: "24px" }}>
-              <Row gutter={[16, 16]}>
-                <Col xs={24} sm={8}>
-                  <Button type="primary" size="large" block icon={<PlusOutlined />}>
-                    Add New Member
-                  </Button>
-                </Col>
-                <Col xs={24} sm={8}>
-                  <Button size="large" block icon={<CalendarOutlined />}>
-                    Schedule PT Session
-                  </Button>
-                </Col>
-                <Col xs={24} sm={8}>
-                  <Button size="large" block icon={<RiseOutlined />}>
-                    View Reports
-                  </Button>
-                </Col>
-              </Row>
-            </Card>
+        {/* Final CTA Section */}
+        <div
+          id="contact"
+          style={{
+            textAlign: "center",
+            padding: "80px 20px",
+            background: "linear-gradient(135deg, #bbdefb 0%, #90caf9 100%)",
+            marginBottom: "40px",
+          }}
+        >
+          <Title level={2} style={{ color: "#1890ff", marginBottom: "24px", fontSize: "2.5em" }}>
+            Ready to Start Your Fitness Journey?
+          </Title>
+          <Paragraph style={{ fontSize: "1.2em", maxWidth: "800px", margin: "0 auto 40px" }}>
+            Join GymEase today and take the first step towards a healthier, happier you.
+          </Paragraph>
+          <Button type="primary" size="large" href="#packages" style={{ height: "50px", fontSize: "1.1em" }}>
+            Sign Up Today
+          </Button>
+        </div>
+      </Content>
 
-            {/* Welcome Message */}
-            <Card className="gym-stats" style={{ marginTop: "24px", textAlign: "center" }}>
-              <Space direction="vertical" size="large">
-                <FireOutlined style={{ fontSize: "48px" }} />
-                <Title level={2} style={{ color: "white", margin: 0 }}>
-                  Welcome to GymEase
-                </Title>
-                <Paragraph style={{ color: "white", fontSize: "16px", maxWidth: "600px" }}>
-                  Streamline your gym operations with our comprehensive management system. Track members, manage
-                  trainers, schedule sessions, and boost your business growth with powerful analytics and automation.
-                </Paragraph>
-                <Button type="primary" size="large" ghost>
-                  Get Started
-                </Button>
-              </Space>
-            </Card>
-          </div>
-        </Content>
-      </Layout>
+      <Footer style={{ textAlign: "center", background: "#f0f2f5", padding: "24px 50px" }}>
+        <Paragraph>GymEase ©{new Date().getFullYear()} Created by Vercel. All rights reserved.</Paragraph>
+        <Space size="large">
+          <Link href="#">Privacy Policy</Link>
+          <Link href="#">Terms of Service</Link>
+          <Link href="#">Contact</Link>
+        </Space>
+      </Footer>
     </Layout>
   )
 }

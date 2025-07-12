@@ -5,6 +5,9 @@ import "./globals.css"
 export const metadata = {
   title: "GymEase - Gym Management System",
   description: "Easy Gym Management System for modern fitness centers",
+  icons: {
+    icon: "/favicon.ico",
+  },
 }
 
 export default function RootLayout({ children }) {
