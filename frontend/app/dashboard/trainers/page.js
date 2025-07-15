@@ -205,7 +205,7 @@ export default function TrainersPage() {
     <div className="fade-in">
       <div style={{ marginBottom: "24px" }}>
         <Title level={2}>Personal Trainers Management</Title>
-        <Paragraph>Manage your gym's personal trainers and their details.</Paragraph>
+        <Paragraph>Manage your gym&apos;s personal trainers and their details.</Paragraph>
       </div>
 
       <Card title="Personal Trainers List" className="gym-card">
