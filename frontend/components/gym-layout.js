@@ -6,7 +6,7 @@ import {
   UserOutlined,
   TeamOutlined,
   CalendarOutlined,
-  DollarOutlined,
+  DollarOutlined, // Pastikan DollarOutlined diimpor
   TrophyOutlined,
   SettingOutlined,
   LogoutOutlined,
@@ -16,48 +16,51 @@ import {
   FireOutlined,
   BarChartOutlined,
 } from "@ant-design/icons"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 const { Header, Sider, Content } = Layout
 const { Title } = Typography
 
 export default function GymLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false)
+  const pathname = usePathname()
 
   const menuItems = [
     {
-      key: "dashboard",
+      key: "/dashboard",
       icon: <BarChartOutlined />,
-      label: "Dashboard",
+      label: <Link href="/dashboard">Dashboard</Link>,
     },
     {
-      key: "members",
+      key: "/dashboard/members",
       icon: <UserOutlined />,
-      label: "Members",
+      label: <Link href="/dashboard/members">Members</Link>,
     },
     {
-      key: "trainers",
+      key: "/dashboard/trainers",
       icon: <TeamOutlined />,
-      label: "Personal Trainers",
+      label: <Link href="/dashboard/trainers">Personal Trainers</Link>,
     },
     {
-      key: "schedules",
+      key: "/dashboard/schedules",
       icon: <CalendarOutlined />,
-      label: "Schedules",
+      label: <Link href="/dashboard/schedules">Schedules</Link>,
     },
     {
-      key: "transactions",
-      icon: <DollarOutlined />,
-      label: "Transactions",
+      key: "/dashboard/transactions", // Tambahkan ini
+      icon: <DollarOutlined />, // Gunakan DollarOutlined
+      label: <Link href="/dashboard/transactions">Transactions</Link>, // Tambahkan ini
     },
     {
-      key: "packages",
+      key: "/dashboard/packages",
       icon: <TrophyOutlined />,
-      label: "Packages & Promos",
+      label: <Link href="/dashboard/packages">Packages & Promos</Link>,
     },
     {
-      key: "settings",
+      key: "/dashboard/settings",
       icon: <SettingOutlined />,
-      label: "Settings",
+      label: <Link href="/dashboard/settings">Settings</Link>,
     },
   ]
 
@@ -117,12 +120,7 @@ export default function GymLayout({ children }) {
           )}
         </div>
 
-        <Menu
-          mode="inline"
-          defaultSelectedKeys={["dashboard"]}
-          items={menuItems}
-          style={{ border: "none", marginTop: "16px" }}
-        />
+        <Menu mode="inline" selectedKeys={[pathname]} items={menuItems} style={{ border: "none", marginTop: "16px" }} />
       </Sider>
 
       <Layout>
