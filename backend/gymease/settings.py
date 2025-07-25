@@ -8,10 +8,26 @@ SECRET_KEY = 'your-secret-key-here'
 DEBUG = False
 # DEBUG = True
 
-ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ibupenggeraksidina.id']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ibupenggeraksidina.id', 'www.ibupenggeraksidina.id'] # Tambahkan domain produksi Anda di sini
 
-CSRF_TRUSTED_ORIGINS = ["https://ibupenggeraksidina.id",]
+# Tambahkan atau modifikasi bagian ini untuk CSRF_TRUSTED_ORIGINS
+# Pastikan untuk menyertakan skema (http:// atau https://)
+# dan port jika ada (misalnya, "http://localhost:3000" untuk pengembangan frontend)
+CSRF_TRUSTED_ORIGINS = [
+    "https://ibupenggeraksidina.id",
+    "https://www.ibupenggeraksidina.id", # Tambahkan jika situs Anda bisa diakses dengan 'www'
+    "https://ibupenggeraksidina.id/", # Tambahkan jika ada trailing slash
+    # Jika Anda memiliki domain lain yang mengakses API Django Anda, tambahkan di sini
+    # Contoh: "https://api.your-other-domain.com",
+    # Untuk pengembangan lokal dengan React/Next.js di port 3000:
+    # "http://localhost:3000",
+    # "http://127.0.0.1:3000",
+]
+
+# ALLOWED_HOSTS = ['*']
+# # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ibupenggeraksidina.id']
+
+# CSRF_TRUSTED_ORIGINS = ["https://ibupenggeraksidina.id",]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -100,9 +116,17 @@ REST_FRAMEWORK = {
     ],
 }
 
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://ibupenggeraksidina.id", # Tambahkan domain produksi Anda di sini
+    "https://www.ibupenggeraksidina.id", # Tambahkan jika situs Anda bisa diakses dengan 'www'
+    "https://gy-system-frontend-kqzk5.ondigitalocean.app"
 ]
 
 CORS_ALLOW_CREDENTIALS = True
