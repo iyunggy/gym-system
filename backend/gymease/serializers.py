@@ -197,6 +197,12 @@ class TransaksiSerializer(serializers.ModelSerializer):
         model = models.Transaksi
         fields = '__all__'
 
+class PromoSerializer(serializers.ModelSerializer):
+    product_detail = ProdukSerializer(source='produk', read_only=True)
+    
+    class Meta:
+        model = models.Promo
+        fields = '__all__'
 
 # class MemberSerializer(serializers.ModelSerializer):
 #     # Field 'phone' untuk input (write_only)

@@ -55,13 +55,13 @@ export default function GymLayout({ children }) {
     {
       key: "/dashboard/packages",
       icon: <TrophyOutlined />,
-      label: <Link href="/dashboard/packages">Packages & Promos</Link>,
+      label: <Link href="/dashboard/packages">Packages</Link>,
     },
-    // {
-    //   key: "/dashboard/settings",
-    //   icon: <SettingOutlined />,
-    //   label: <Link href="/dashboard/settings">Settings</Link>,
-    // },
+    {
+      key: "/dashboard/promos",
+      icon: <SettingOutlined />,
+      label: <Link href="/dashboard/promos">Promo</Link>,
+    },
   ]
 
   const userMenuItems = [

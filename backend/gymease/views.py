@@ -433,9 +433,9 @@ class MemberViewSet(viewsets.ModelViewSet):
 #     queryset = Produk.objects.filter(is_active=True)
 #     serializer_class = ProdukSerializer
 
-# class PromoViewSet(viewsets.ModelViewSet):
-#     queryset = Promo.objects.filter(is_active=True)
-#     serializer_class = PromoSerializer
+class PromoViewSet(viewsets.ModelViewSet):
+    queryset = models.Promo.objects.all()
+    serializer_class = serializers.PromoSerializer
     
 #     @action(detail=False, methods=['get'])
 #     def active_promos(self, request):
@@ -528,9 +528,9 @@ class PersonalTrainerViewSet(viewsets.ModelViewSet):
 #         return Response({'error': 'trainer_id and date parameters required'}, 
 #                        status=status.HTTP_400_BAD_REQUEST)
 
-# class TransaksiViewSet(viewsets.ModelViewSet):
-#     queryset = Transaksi.objects.all()
-#     serializer_class = TransaksiSerializer
+class TransaksisViewSet(viewsets.ModelViewSet):
+    queryset = models.Transaksi.objects.all()
+    serializer_class = serializers.TransaksiSerializer
     
 #     def get_queryset(self):
 #         queryset = Transaksi.objects.all()
