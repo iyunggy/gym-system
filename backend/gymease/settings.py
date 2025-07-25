@@ -130,3 +130,12 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
+
+# Pengaturan tambahan untuk proxy terbalik (Reverse Proxy) seperti Nginx
+# Ini memberi tahu Django bahwa permintaan datang melalui HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Ini memungkinkan Django untuk mempercayai header X-Forwarded-Host
+# yang sering digunakan oleh proxy untuk meneruskan host asli
+USE_X_FORWARDED_HOST = True
