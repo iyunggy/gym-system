@@ -12,7 +12,7 @@ router.register(r'personal-trainers', views.PersonalTrainerViewSet)
 router.register(r'jadwal-pt', views.JadwalPersonalTrainerViewSet)
 router.register(r'transaksis', views.TransaksisViewSet)
 # router.register(r'membership-history', MembershipHistoryViewSet)
-# router.register(r'pt-sessions', PTSessionViewSet)
+router.register(r'pt-sessions', views.PTSessionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

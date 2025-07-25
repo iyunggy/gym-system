@@ -579,9 +579,9 @@ class TransaksisViewSet(viewsets.ModelViewSet):
 #     queryset = MembershipHistory.objects.all()
 #     serializer_class = MembershipHistorySerializer
 
-# class PTSessionViewSet(viewsets.ModelViewSet):
-#     queryset = PTSession.objects.all()
-#     serializer_class = PTSessionSerializer
+class PTSessionViewSet(viewsets.ModelViewSet):
+    queryset = models.JadwalPersonalTrainer.objects.all()
+    serializer_class = serializers.JadwalPersonalTrainerSerializer
     
 #     @action(detail=True, methods=['post'])
 #     def complete_session(self, request, pk=None):

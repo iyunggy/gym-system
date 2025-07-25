@@ -42,11 +42,11 @@ export default function GymLayout({ children }) {
       icon: <TeamOutlined />,
       label: <Link href="/dashboard/trainers">Personal Trainers</Link>,
     },
-    // {
-    //   key: "/dashboard/schedules",
-    //   icon: <CalendarOutlined />,
-    //   label: <Link href="/dashboard/schedules">Schedules</Link>,
-    // },
+    {
+      key: "/dashboard/trainer-schedule",
+      icon: <CalendarOutlined />,
+      label: <Link href="/dashboard/trainer-schedule">Jadwal Trainer</Link>,
+    },
     {
       key: "/dashboard/transactions", // Tambahkan ini
       icon: <DollarOutlined />, // Gunakan DollarOutlined
