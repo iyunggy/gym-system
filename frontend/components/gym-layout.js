@@ -27,11 +27,11 @@ export default function GymLayout({ children }) {
   const pathname = usePathname()
 
   const menuItems = [
-    {
-      key: "/dashboard",
-      icon: <BarChartOutlined />,
-      label: <Link href="/dashboard">Dashboard</Link>,
-    },
+    // {
+    //   key: "/dashboard",
+    //   icon: <BarChartOutlined />,
+    //   label: <Link href="/dashboard">Dashboard</Link>,
+    // },
     {
       key: "/dashboard/members",
       icon: <UserOutlined />,

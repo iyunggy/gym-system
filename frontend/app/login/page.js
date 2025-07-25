@@ -47,7 +47,7 @@ export default function LoginPage() {
       if (data.user.profile.role === "member") {
         router.push("/");
       } else {
-        router.push("/dashboard"); // Arahkan ke dashboard
+        router.push("/dashboard/members"); // Arahkan ke dashboard
       }
     } catch (error) {
       message.error("Login failed: " + error.message);
