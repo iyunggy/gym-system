@@ -7,3 +7,4 @@ export const API_JADWALPT = `${BASEURL}/api/jadwal-pt/`;
 export const API_USER =  `${BASEURL}/api/user/`;
 export const API_TRANSAKSI =  `${BASEURL}/api/transaksi/`;
 export const API_TRANSAKSIDETAIL =  `${BASEURL}/api/transaksi-detail/`;
+export const API_MEMBERS =  `${BASEURL}/api/members/`;
