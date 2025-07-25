@@ -1,0 +1,288 @@
+[
+{
+  "model": "gymease.userprofile",
+  "pk": 1,
+  "fields": {
+    "created_at": "2025-07-24T15:21:43Z",
+    "updated_at": "2025-07-24T15:24:47.218Z",
+    "email": "pt1@gmail.com",
+    "user": 5,
+    "phone": "081212960351",
+    "address": null,
+    "kota": null,
+    "kode_pos": null,
+    "tempat_lahir": null,
+    "tanggal_lahir": null,
+    "role": "personal trainer",
+    "id_member": "M-E21136B0",
+    "id_pt": "PT-147227FD",
+    "tahun_kerja": 2,
+    "bulan_kerja": 3,
+    "sertifikasi_pt": ""
+  }
+},
+{
+  "model": "gymease.userprofile",
+  "pk": 12,
+  "fields": {
+    "created_at": "2025-07-24T22:28:25.231Z",
+    "updated_at": "2025-07-24T22:28:25.233Z",
+    "email": null,
+    "user": 20,
+    "phone": "6285162808926",
+    "address": "Jl. Pemuda 1 No. 61 001/08, Kreo Selatan, Larangan",
+    "kota": "Tangerang",
+    "kode_pos": "15156",
+    "tempat_lahir": "jakarta",
+    "tanggal_lahir": "2025-07-02",
+    "role": "member",
+    "id_member": "M-4409AADF",
+    "id_pt": "PT-74AA8F03",
+    "tahun_kerja": null,
+    "bulan_kerja": null,
+    "sertifikasi_pt": ""
+  }
+},
+{
+  "model": "gymease.userprofile",
+  "pk": 13,
+  "fields": {
+    "created_at": "2025-07-25T07:14:03Z",
+    "updated_at": "2025-07-25T07:14:18.215Z",
+    "email": null,
+    "user": 1,
+    "phone": null,
+    "address": "",
+    "kota": null,
+    "kode_pos": null,
+    "tempat_lahir": null,
+    "tanggal_lahir": null,
+    "role": "admin",
+    "id_member": "M-792C13F0",
+    "id_pt": "PT-96DAEE40",
+    "tahun_kerja": null,
+    "bulan_kerja": null,
+    "sertifikasi_pt": ""
+  }
+},
+{
+  "model": "gymease.userprofile",
+  "pk": 15,
+  "fields": {
+    "created_at": "2025-07-25T08:30:29.096Z",
+    "updated_at": "2025-07-25T08:30:29.102Z",
+    "email": null,
+    "user": 26,
+    "phone": null,
+    "address": null,
+    "kota": null,
+    "kode_pos": null,
+    "tempat_lahir": null,
+    "tanggal_lahir": null,
+    "role": "personal trainer",
+    "id_member": "M-4696EE67",
+    "id_pt": "PT-0B4056DD",
+    "tahun_kerja": null,
+    "bulan_kerja": null,
+    "sertifikasi_pt": null
+  }
+},
+{
+  "model": "gymease.userprofile",
+  "pk": 16,
+  "fields": {
+    "created_at": "2025-07-25T08:32:14.694Z",
+    "updated_at": "2025-07-25T08:32:14.697Z",
+    "email": null,
+    "user": 27,
+    "phone": null,
+    "address": null,
+    "kota": null,
+    "kode_pos": null,
+    "tempat_lahir": null,
+    "tanggal_lahir": null,
+    "role": "personal trainer",
+    "id_member": "M-90347A66",
+    "id_pt": "PT-69145783",
+    "tahun_kerja": null,
+    "bulan_kerja": null,
+    "sertifikasi_pt": null
+  }
+},
+{
+  "model": "gymease.jadwalpersonaltrainer",
+  "pk": 1,
+  "fields": {
+    "created_at": "2025-07-24T15:28:25Z",
+    "updated_at": "2025-07-24T15:29:32.194Z",
+    "pt": 5,
+    "hari": "senin",
+    "tersedia_dari": "08:00:00",
+    "tersedia_akhir": "06:00:00"
+  }
+},
+{
+  "model": "gymease.produk",
+  "pk": 1,
+  "fields": {
+    "created_at": "2025-07-24T14:31:31Z",
+    "updated_at": "2025-07-24T14:33:22.530Z",
+    "nama_paket": "Stater Pack",
+    "deskripsi": "",
+    "fitur_paket": [
+      "Akses gym 24/7",
+      "Locker gratis",
+      "1x konsultasi trainer",
+      "Akses cardio zone",
+      "Welcome kit"
+    ],
+    "harga": "299000.00",
+    "durasi_hari": 30,
+    "is_active": true
+  }
+},
+{
+  "model": "gymease.produk",
+  "pk": 2,
+  "fields": {
+    "created_at": "2025-07-24T14:33:27Z",
+    "updated_at": "2025-07-24T14:35:13.874Z",
+    "nama_paket": "Power Boost",
+    "deskripsi": "",
+    "fitur_paket": [
+      "Semua fasilitas Starter",
+      "Unlimited group classes",
+      "3x personal training",
+      "Akses sauna & steam",
+      "Nutrition consultation",
+      "Progress tracking app"
+    ],
+    "harga": "799000.00",
+    "durasi_hari": 90,
+    "is_active": true
+  }
+},
+{
+  "model": "gymease.produk",
+  "pk": 3,
+  "fields": {
+    "created_at": "2025-07-24T14:35:18Z",
+    "updated_at": "2025-07-24T14:43:27.798Z",
+    "nama_paket": "Ultimate Transform",
+    "deskripsi": "",
+    "fitur_paket": [
+      "Semua fasilitas Power Boost",
+      "Unlimited personal training",
+      "Priority booking",
+      "Guest pass (2x/bulan)",
+      "Meal plan consultation",
+      "Body composition analysis",
+      "VIP locker room access",
+      "Exclusive member events"
+    ],
+    "harga": "1499000.00",
+    "durasi_hari": 180,
+    "is_active": true
+  }
+},
+{
+  "model": "gymease.transaksi",
+  "pk": 30,
+  "fields": {
+    "created_at": "2025-07-25T06:49:34.985Z",
+    "updated_at": "2025-07-25T06:49:35.264Z",
+    "id_transaksi": "TRXDD58EAA8",
+    "member": 20,
+    "produk": 1,
+    "promo": null,
+    "pt": 1,
+    "jadwal_pt": 1,
+    "total_bayar": "299000.00",
+    "status": "unpaid",
+    "tanggal_mulai_membership": null,
+    "tanggal_berakhir_membership": null,
+    "xendit_qr_id": "qr_90f8b445-b89f-42e8-95b9-6ad4ebcda104",
+    "xendit_qr_string": "00020101021226660014ID.LINKAJA.WWW011893600911002100624702152007271100624700303UME51450015ID.OR.GPNQR.WWW02150000000000000000303UME520482205802ID5909EDUCOURSE6013Tangerang Sel61051531062380115JZv1ZA8c8huzcwi0715JZv1ZA8c8huzcwi53033605406299000630449B5"
+  }
+},
+{
+  "model": "gymease.transaksi",
+  "pk": 31,
+  "fields": {
+    "created_at": "2025-07-25T07:08:00.130Z",
+    "updated_at": "2025-07-25T07:08:00.131Z",
+    "id_transaksi": "TRX3B4A9C2A",
+    "member": 20,
+    "produk": 1,
+    "promo": null,
+    "pt": 1,
+    "jadwal_pt": 1,
+    "total_bayar": "299000.00",
+    "status": "unpaid",
+    "tanggal_mulai_membership": null,
+    "tanggal_berakhir_membership": null,
+    "xendit_qr_id": null,
+    "xendit_qr_string": null
+  }
+},
+{
+  "model": "gymease.transaksi",
+  "pk": 32,
+  "fields": {
+    "created_at": "2025-07-25T07:08:25.004Z",
+    "updated_at": "2025-07-25T07:08:25.006Z",
+    "id_transaksi": "TRX0A00F6EB",
+    "member": 20,
+    "produk": 1,
+    "promo": null,
+    "pt": 1,
+    "jadwal_pt": 1,
+    "total_bayar": "299000.00",
+    "status": "unpaid",
+    "tanggal_mulai_membership": null,
+    "tanggal_berakhir_membership": null,
+    "xendit_qr_id": null,
+    "xendit_qr_string": null
+  }
+},
+{
+  "model": "gymease.transaksi",
+  "pk": 33,
+  "fields": {
+    "created_at": "2025-07-25T07:08:35.923Z",
+    "updated_at": "2025-07-25T07:08:35.925Z",
+    "id_transaksi": "TRX59090751",
+    "member": 20,
+    "produk": 1,
+    "promo": null,
+    "pt": 1,
+    "jadwal_pt": 1,
+    "total_bayar": "299000.00",
+    "status": "unpaid",
+    "tanggal_mulai_membership": null,
+    "tanggal_berakhir_membership": null,
+    "xendit_qr_id": null,
+    "xendit_qr_string": null
+  }
+},
+{
+  "model": "gymease.transaksi",
+  "pk": 34,
+  "fields": {
+    "created_at": "2025-07-25T07:09:05.321Z",
+    "updated_at": "2025-07-25T07:09:08.363Z",
+    "id_transaksi": "TRXC1B4E20B",
+    "member": 20,
+    "produk": 1,
+    "promo": null,
+    "pt": 1,
+    "jadwal_pt": 1,
+    "total_bayar": "299000.00",
+    "status": "unpaid",
+    "tanggal_mulai_membership": null,
+    "tanggal_berakhir_membership": null,
+    "xendit_qr_id": "qr_fb7fb211-4abd-4b8d-8b36-ca0e9a38bb90",
+    "xendit_qr_string": "00020101021226660014ID.LINKAJA.WWW011893600911002100624702152007271100624700303UME51450015ID.OR.GPNQR.WWW02150000000000000000303UME520482205802ID5909EDUCOURSE6013Tangerang Sel61051531062380115Z24MXdYqRdDBFAa0715Z24MXdYqRdDBFAa5303360540629900063049393"
+  }
+}
+]

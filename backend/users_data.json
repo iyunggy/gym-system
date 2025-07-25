@@ -1,0 +1,146 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$2iHKkLShBDSr8dddDwa5aI$CwiI4TDyfVNBmz/xyQCCBKxq4P8SZM1aCLvXSRa5rOI=",
+    "last_login": "2025-07-15T15:46:04.942Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@gym.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-07-12T03:56:08.162Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$HCp03u6s13JgmzkXQOA50b$5hwYcXLRm8rMYncpX63+QFymxUHT19Niigx0cOd1oKY=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "member_285c04ce",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-07-15T17:16:22.887Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$PyDujhNyuNXcWrMn45hWeq$Erbl6ofhjfqjVY0blMIk0VFN9kW4zTM+Bi31Zkol0VU=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "member_e6d717b9",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-07-15T17:27:40.675Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$qqpIRKKMalXkZpyqhXw26w$41SXcf0fviCWxXolBGtSrPR2iNL6OxrgT+t/S2Tp6JQ=",
+    "last_login": "2025-07-24T13:46:02.742Z",
+    "is_superuser": true,
+    "username": "iyung",
+    "first_name": "",
+    "last_name": "",
+    "email": "iyung@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-07-24T13:44:47.082Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$SmWs7gn4r4mkGa73dfinIZ$QoBEQMTt4W3IPXmptE6aMwgMYgHc4X3PCW7aI9Ofyvk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "khoirula964@gmail.comw",
+    "first_name": "Nama personal Trianer",
+    "last_name": "Anwar",
+    "email": "khoirula964@gmail.comw",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-07-24T15:21:05Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 20,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$djPx5osaK3EOlqpw3YITnj$NEg/99DbrI5is6fWht2U0+M4JWCuI07rGw+m90lPKVg=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "khoirula964.1@gmail.com",
+    "first_name": "Muhammad Khoirul",
+    "last_name": "Anwar",
+    "email": "khoirula964.1@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-07-24T22:28:25.138Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 26,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "khoirula964@gmail.compt",
+    "first_name": "Muhammad Khoirul",
+    "last_name": "Anwar",
+    "email": "khoirula964@gmail.compt",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-07-25T08:30:29.094Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 27,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "khoirula964@gmail.comptt",
+    "first_name": "Muhammad Khoirul",
+    "last_name": "Anwar",
+    "email": "khoirula964@gmail.comptt",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-07-25T08:32:14.692Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
