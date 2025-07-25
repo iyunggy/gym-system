@@ -36,7 +36,7 @@ class UserProfile(models.Model):
                                       validators=[MinValueValidator(0)])
     bulan_kerja = models.IntegerField(null=True, blank=True,
                                      validators=[MinValueValidator(0), MaxValueValidator(11)])
-    sertifikasi_pt = models.FileField(upload_to='userprofile/sertifikasipt/', blank=True, null=True)
+    sertifikasi_pt = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return str(self.user)

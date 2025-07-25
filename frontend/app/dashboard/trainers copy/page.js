@@ -18,14 +18,10 @@ import {
   InputNumber,
 } from "antd"
 import { PlusOutlined, SearchOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from "@ant-design/icons"
-import axios from "axios"
+import { authenticatedFetch } from "@/lib/api"
 
 const { Title, Paragraph } = Typography
 const { Search } = Input
-
-// Definisikan BASE_URL API Anda
-// Sesuaikan dengan URL backend Django Anda
-const BASE_API_URL = "http://localhost:8000/api" // Contoh: Sesuaikan dengan URL API Anda
 
 export default function TrainersPage() {
   const [trainers, setTrainers] = useState([])
@@ -38,24 +34,10 @@ export default function TrainersPage() {
     fetchTrainers()
   }, [])
 
-  const getAuthHeaders = () => {
-    const authToken = localStorage.getItem("authToken")
-    return authToken
-      ? { Authorization: `Token ${authToken}` }
-      : {}
-  }
-
   const fetchTrainers = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`${BASE_API_URL}/personal-trainers/`, {
-        headers: {
-          "Content-Type": "application/json",
-          ...getAuthHeaders(),
-        },
-      })
-      
-      const data = response.data
+      const data = await authenticatedFetch("/personal-trainers/")
       if (data && typeof data === "object" && Array.isArray(data.results)) {
         setTrainers(data.results)
       } else if (Array.isArray(data)) {
@@ -66,11 +48,7 @@ export default function TrainersPage() {
         message.error("Failed to load trainers: Unexpected data format.")
       }
     } catch (error) {
-      message.error(
-        "Error fetching trainers: " +
-          (error.response?.data?.detail || error.message)
-      )
-      setTrainers([])
+      message.error("Error fetching trainers: " + error.message)
     } finally {
       setLoading(false)
     }
@@ -79,11 +57,11 @@ export default function TrainersPage() {
   const columns = [
     {
       title: "Trainer",
-      dataIndex: "nama",
+      dataIndex: "nama", // Diubah dari 'name' ke 'nama'
       key: "nama",
       render: (text, record) => (
         <Space>
-          <Avatar style={{ backgroundColor: "#722ed1" }}>{record.username.charAt(0).toUpperCase()}</Avatar>
+          <Avatar style={{ backgroundColor: "#722ed1" }}>{text.charAt(0).toUpperCase()}</Avatar>
           <div>
             <div style={{ fontWeight: "bold" }}>{text}</div>
             <div style={{ color: "#666", fontSize: "12px" }}>{record.id_pt}</div>
@@ -97,31 +75,21 @@ export default function TrainersPage() {
       key: "contact",
       render: (email, record) => (
         <div>
-          <div>{record?.profile?.email}</div>
-          <div style={{ color: "#666", fontSize: "12px" }}>{record?.profile?.phone}</div>
+          <div>{email}</div>
+          <div style={{ color: "#666", fontSize: "12px" }}>{record.phone}</div>
         </div>
       ),
     },
     {
       title: "Certification",
-      dataIndex: "sertifikasi_pt",
-      key: "sertifikasi_pt",
+      dataIndex: "sertifikasi", // Diubah dari 'certification' ke 'sertifikasi'
+      key: "sertifikasi",
       ellipsis: true,
     },
     {
-      // Kolom ini tetap menampilkan masa_kerja (total bulan)
-      // Atau bisa diubah untuk format "X Years Y Months" jika diinginkan
-      title: "Tahun Kerja",
-      dataIndex: "tahun_kerja",
-      key: "tahun_kerja",
-      align: "center",
-    },
-    {
-      // Kolom ini tetap menampilkan masa_kerja (total bulan)
-      // Atau bisa diubah untuk format "X Years Y Months" jika diinginkan
-      title: "Bulan Kerja",
-      dataIndex: "bulan_kerja",
-      key: "bulan_kerja",
+      title: "Experience (Months)", // Diubah dari 'Years' ke 'Months'
+      dataIndex: "masa_kerja", // Diubah dari 'years_of_experience' ke 'masa_kerja'
+      key: "masa_kerja",
       align: "center",
     },
     {
@@ -154,19 +122,14 @@ export default function TrainersPage() {
 
   const handleEdit = (record) => {
     setEditingTrainer(record)
-    // Pisahkan masa_kerja (total bulan) menjadi tahun dan bulan
-    const years = record.masa_kerja ? Math.floor(record.masa_kerja / 12) : 0;
-    const months = record.masa_kerja ? record.masa_kerja % 12 : 0;
-
     form.setFieldsValue({
       ...record,
+      // Mapping field dari backend ke nama field di form frontend
       nama: record.nama,
       email: record.email,
       phone: record.phone,
       sertifikasi: record.sertifikasi,
-      // Mengisi form dengan nilai tahun dan bulan terpisah
-      years_of_experience: years,
-      months_of_experience: months,
+      masa_kerja: record.masa_kerja, // Sesuaikan dengan nama field di form
     })
     setIsModalVisible(true)
   }
@@ -180,16 +143,11 @@ export default function TrainersPage() {
       onOk: async () => {
         setLoading(true)
         try {
-          await axios.delete(`${BASE_API_URL}/personal-trainers/${id_pt}/`, {
-            headers: getAuthHeaders(),
-          })
+          await authenticatedFetch(`/personal-trainers/${id_pt}/`, { method: "DELETE" })
           message.success("Personal trainer deleted successfully!")
           fetchTrainers()
         } catch (error) {
-          message.error(
-            "Error deleting trainer: " +
-              (error.response?.data?.detail || error.message)
-          )
+          message.error("Error deleting trainer: " + error.message)
         } finally {
           setLoading(false)
         }
@@ -202,46 +160,27 @@ export default function TrainersPage() {
       const values = await form.validateFields()
       setLoading(true)
 
-      // Gabungkan tahun dan bulan menjadi total masa_kerja dalam bulan
-      const totalMonths = (values.years_of_experience * 12) + values.months_of_experience;
-
       const trainerData = {
-        first_name: values.first_name,
-        last_name: values.last_name,
-        username: values.email,
+        // Pastikan nama field sesuai dengan model Django Anda
+        nama: values.nama,
         email: values.email,
         phone: values.phone,
-        sertifikasi_pt: values.sertifikasi,
-        // masa_kerja: totalMonths, // Kirim total bulan ke backend
-        tahun_kerja: values.years_of_experience,
-        bulan_kerja: values.months_of_experience
+        sertifikasi: values.sertifikasi,
+        masa_kerja: values.masa_kerja, // Sesuaikan dengan nama field di form
       }
-      console.log("🚀 ~ handleModalOk ~ trainerData:", trainerData)
 
       let response
       if (editingTrainer) {
-        response = await axios.put(
-          `${BASE_API_URL}/personal-trainers/${editingTrainer.id_pt}/`,
-          trainerData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              ...getAuthHeaders(),
-            },
-          }
-        )
+        await authenticatedFetch(`/personal-trainers/${editingTrainer.id_pt}/`, {
+          method: "PUT",
+          body: JSON.stringify(trainerData),
+        })
         message.success("Personal trainer updated successfully!")
       } else {
-        response = await axios.post(
-          `${BASE_API_URL}/personal-trainers/`,
-          trainerData,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              ...getAuthHeaders(),
-            },
-          }
-        )
+        await authenticatedFetch("/personal-trainers/", {
+          method: "POST",
+          body: JSON.stringify(trainerData),
+        })
         message.success("Personal trainer added successfully!")
       }
       setIsModalVisible(false)
@@ -249,17 +188,7 @@ export default function TrainersPage() {
       setEditingTrainer(null)
       fetchTrainers()
     } catch (error) {
-      let errorMessage = "Operation failed: "
-      if (error.response?.data) {
-        if (typeof error.response.data === 'string') {
-          errorMessage += error.response.data
-        } else if (typeof error.response.data === 'object') {
-          errorMessage += Object.values(error.response.data).flat().join('; ')
-        }
-      } else {
-        errorMessage += error.message
-      }
-      message.error(errorMessage)
+      message.error("Operation failed: " + error.message)
       console.log("Validation failed or API error:", error)
     } finally {
       setLoading(false)
@@ -327,13 +256,8 @@ export default function TrainersPage() {
         <Form form={form} layout="vertical" name="trainerForm">
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="first_name" label="First Name" rules={[{ required: true, message: "Please enter full name" }]}>
-                <Input placeholder="Enter first name" size="large" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="last_name" label="Last Name" rules={[{ required: true, message: "Please enter full name" }]}>
-                <Input placeholder="Enter last name" size="large" />
+              <Form.Item name="nama" label="Full Name" rules={[{ required: true, message: "Please enter full name" }]}>
+                <Input placeholder="Enter full name" size="large" />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -349,7 +273,6 @@ export default function TrainersPage() {
               </Form.Item>
             </Col>
           </Row>
-          
 
           <Row gutter={16}>
             <Col span={12}>
@@ -363,7 +286,7 @@ export default function TrainersPage() {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="sertifikasi_pt"
+                name="sertifikasi" // Diubah dari 'certification' ke 'sertifikasi'
                 label="Certification"
                 rules={[{ required: true, message: "Please enter certification" }]}
               >
@@ -372,30 +295,13 @@ export default function TrainersPage() {
             </Col>
           </Row>
 
-          {/* PERUBAHAN DI SINI: Dua InputNumber terpisah untuk Tahun dan Bulan */}
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="years_of_experience"
-                label="Years of Experience"
-                rules={[{ required: true, message: "Please enter years" }]}
-                initialValue={0} // Default value
-              >
-                <InputNumber min={0} placeholder="Years" style={{ width: "100%" }} size="large" />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="months_of_experience"
-                label="Months of Experience"
-                rules={[{ required: true, message: "Please enter months" }]}
-                initialValue={0} // Default value
-              >
-                <InputNumber min={0} max={11} placeholder="Months" style={{ width: "100%" }} size="large" />
-              </Form.Item>
-            </Col>
-          </Row>
-          {/* AKHIR PERUBAHAN */}
+          <Form.Item
+            name="masa_kerja" // Diubah dari 'yearsOfExperience' ke 'masa_kerja'
+            label="Experience (Months)" // Label diubah
+            rules={[{ required: true, message: "Please enter years of experience" }]}
+          >
+            <InputNumber min={0} placeholder="e.g., 60" style={{ width: "100%" }} size="large" />
+          </Form.Item>
         </Form>
       </Modal>
     </div>

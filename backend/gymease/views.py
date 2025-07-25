@@ -448,9 +448,62 @@ class MemberViewSet(viewsets.ModelViewSet):
 #         serializer = self.get_serializer(active_promos, many=True)
 #         return Response(serializer.data)
 
-# class PersonalTrainerViewSet(viewsets.ModelViewSet):
-#     queryset = PersonalTrainer.objects.filter(is_active=True)
-#     serializer_class = PersonalTrainerSerializer
+class PersonalTrainerViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.filter(profile__role='personal trainer')
+    serializer_class = serializers.UserLoginSerializer
+
+    def perform_create(self, serializer):
+        # Dapatkan data mentah dari request
+        data = self.request.data
+
+        # --- Bagian 1: Buat User ---
+        # is_active tidak akan diproses oleh serializer.save() jika read_only=True
+        # jadi kita perlu mengaturnya secara manual setelah user dibuat
+        user_data_for_creation = {
+            'username': data.get('email'), # Asumsi username sama dengan email dari frontend
+            'email': data.get('email'),
+            'first_name': data.get('first_name'),
+            'last_name': data.get('last_name'),
+            # is_active akan diambil dari data request langsung karena read_only di serializer
+            'is_active': data.get('is_active', True), # Default ke True jika tidak disediakan
+        }
+        
+        # Buat user instance
+        user_instance = User.objects.create(**user_data_for_creation)
+        
+        # Simpan password jika diperlukan (jika UserLoginSerializer juga menerima password)
+        # Jika serializer menerima password, Anda mungkin perlu memprosesnya di sini
+        # Contoh: user_instance.set_password(data.get('password'))
+        # user_instance.save()
+
+        # --- Bagian 2: Buat UserProfile ---
+        profile_data = data.get('profile', {}) # Ambil data profile dari request
+
+        # Tambahkan 'role' secara eksplisit sebagai 'member'
+        profile_data['role'] = 'member' # Pastikan role selalu 'member' untuk viewset ini
+
+        # Konversi tanggal_lahir dari string ke objek date jika ada
+        tanggal_lahir_str = profile_data.get('tanggal_lahir')
+        if tanggal_lahir_str:
+            try:
+                profile_data['tanggal_lahir'] =datetime.strptime(tanggal_lahir_str, "%Y-%m-%d").date()
+            except ValueError:
+                # print(f"Warning: Invalid date format for tanggal_lahir: {tanggal_lahir_str}")
+                profile_data['tanggal_lahir'] = None # Atau tangani sesuai kebutuhan
+
+        # Buat instance UserProfile dan kaitkan dengan user yang baru dibuat
+        profile = models.UserProfile.objects.create(user=user_instance, **profile_data)
+        profile.role = "personal trainer"
+        profile.save()
+        
+        # Perlu me-refresh instance User untuk mendapatkan profil yang baru dibuat
+        user_instance.refresh_from_db()
+
+        # Untuk respons API, gunakan serializer untuk menserialisasi user_instance
+        # Ini akan memastikan profil juga di-serialize untuk respons
+        response_serializer = self.get_serializer(user_instance)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
 
 # class JadwalPTViewSet(viewsets.ModelViewSet):
 #     queryset = JadwalPT.objects.filter(is_available=True)
