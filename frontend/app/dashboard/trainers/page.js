@@ -138,7 +138,7 @@ export default function TrainersPage() {
               icon={<DeleteOutlined />}
               size="small"
               danger
-              onClick={() => handleDelete(record.id_pt)}
+              onClick={() => handleDelete(record.id)}
             />
           </Tooltip>
         </Space>
@@ -220,8 +220,8 @@ export default function TrainersPage() {
 
       let response
       if (editingTrainer) {
-        response = await axios.put(
-          `${BASE_API_URL}/personal-trainers/${editingTrainer.id_pt}/`,
+        response = await axios.patch(
+          `${BASE_API_URL}/personal-trainers/${editingTrainer.id}/`,
           trainerData,
           {
             headers: {

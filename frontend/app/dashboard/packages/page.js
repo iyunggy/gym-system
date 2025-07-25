@@ -15,12 +15,16 @@ import {
   message,
   Typography,
   Tooltip,
+  Select,
+  Tag,
+  Switch,
 } from "antd"
 import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined, SearchOutlined } from "@ant-design/icons"
-import { authenticatedFetch } from "@/lib/api" // Perbaikan: Import dari "@/lib/api"
+import { API_PRODUK } from "@/utils/endPoint"
 
 const { Title, Paragraph, Text } = Typography
 const { Search } = Input
+const { Option } = Select
 
 export default function PackagesPage() {
   const [packages, setPackages] = useState([])
@@ -31,6 +35,13 @@ export default function PackagesPage() {
   const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
 
+  // Package choices sesuai dengan model Django
+  const PAKET_CHOICES = [
+    { value: "Stater Pack", label: "Stater Pack" },
+    { value: "Power Boost", label: "Power Boost" },
+    { value: "Ultimate Transform", label: "Ultimate Transform" },
+  ]
+
   useEffect(() => {
     fetchPackagesAndPtPrice()
   }, [])
@@ -38,13 +49,53 @@ export default function PackagesPage() {
   const fetchPackagesAndPtPrice = async () => {
     setLoading(true)
     try {
-      const packagesData = await authenticatedFetch("/packages/")
-      setPackages(packagesData)
+      const authToken = localStorage.getItem("authToken")
 
-      const ptPriceData = await authenticatedFetch("/pt-price/")
-      setPtPrice(ptPriceData.ptPrice)
+      // Fetch packages
+      const packagesResponse = await fetch(API_PRODUK, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          ...(authToken && { Authorization: `Token ${authToken}` }),
+        },
+      })
+
+      if (!packagesResponse.ok) {
+        throw new Error(`HTTP error! status: ${packagesResponse.status}`)
+      }
+
+      const packagesData = await packagesResponse.json()
+
+      // Handle DRF pagination or direct array
+      if (packagesData && typeof packagesData === "object" && Array.isArray(packagesData.results)) {
+        setPackages(packagesData.results)
+      } else if (Array.isArray(packagesData)) {
+        setPackages(packagesData)
+      } else {
+        setPackages([])
+      }
+
+      // Fetch PT price
+      try {
+        const ptPriceResponse = await fetch("/api/pt-price/", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...(authToken && { Authorization: `Token ${authToken}` }),
+          },
+        })
+
+        if (ptPriceResponse.ok) {
+          const ptPriceData = await ptPriceResponse.json()
+          setPtPrice(ptPriceData.ptPrice || 0)
+        }
+      } catch (ptError) {
+        console.warn("PT Price not available:", ptError.message)
+        setPtPrice(0)
+      }
     } catch (error) {
       message.error("Error fetching data: " + error.message)
+      setPackages([])
     } finally {
       setLoading(false)
     }
@@ -53,33 +104,57 @@ export default function PackagesPage() {
   const columns = [
     {
       title: "Package Name",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "nama_paket", // Sesuai dengan model Django
+      key: "nama_paket",
       render: (text, record) => (
         <div>
           <div style={{ fontWeight: "bold" }}>{text}</div>
-          <div style={{ color: "#666", fontSize: "12px" }}>{record.id_package}</div>
+          <div style={{ color: "#666", fontSize: "12px" }}>ID: {record.id}</div>
         </div>
       ),
     },
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      ellipsis: true,
+      title: "Package Features",
+      dataIndex: "fitur_paket", // Sesuai dengan model Django
+      key: "fitur_paket",
+      render: (features) => {
+        if (!features || !Array.isArray(features) || features.length === 0) {
+          return <Text type="secondary">No features</Text>
+        }
+        return (
+          <div>
+            {features.slice(0, 3).map((feature, index) => (
+              <Tag key={index} color="blue" style={{ marginBottom: "4px", marginRight: "4px" }}>
+                {feature}
+              </Tag>
+            ))}
+            {features.length > 3 && (
+              <Tag color="default" style={{ marginBottom: "4px" }}>
+                +{features.length - 3} more
+              </Tag>
+            )}
+          </div>
+        )
+      },
     },
     {
       title: "Duration (Days)",
-      dataIndex: "duration_days",
-      key: "duration_days",
+      dataIndex: "durasi_hari", // Sesuai dengan model Django
+      key: "durasi_hari",
       align: "center",
     },
     {
       title: "Price (IDR)",
-      dataIndex: "price",
-      key: "price",
+      dataIndex: "harga", // Sesuai dengan model Django
+      key: "harga",
       render: (price) => `Rp ${Number.parseFloat(price).toLocaleString("id-ID")}`,
       align: "right",
+    },
+    {
+      title: "Status",
+      dataIndex: "is_active", // Sesuai dengan model Django
+      key: "is_active",
+      render: (isActive) => <Tag color={isActive ? "green" : "red"}>{isActive ? "Active" : "Inactive"}</Tag>,
     },
     {
       title: "Actions",
@@ -90,13 +165,7 @@ export default function PackagesPage() {
             <Button type="text" icon={<EditOutlined />} size="small" onClick={() => handleEdit(record)} />
           </Tooltip>
           <Tooltip title="Delete Package">
-            <Button
-              type="text"
-              icon={<DeleteOutlined />}
-              size="small"
-              danger
-              onClick={() => handleDelete(record.id_package)}
-            />
+            <Button type="text" icon={<DeleteOutlined />} size="small" danger onClick={() => handleDelete(record.id)} />
           </Tooltip>
         </Space>
       ),
@@ -112,13 +181,16 @@ export default function PackagesPage() {
   const handleEdit = (record) => {
     setEditingPackage(record)
     form.setFieldsValue({
-      ...record,
-      durationDays: record.duration_days,
+      nama_paket: record.nama_paket,
+      fitur_paket: record.fitur_paket || [],
+      harga: record.harga,
+      durasi_hari: record.durasi_hari,
+      is_active: record.is_active,
     })
     setIsModalVisible(true)
   }
 
-  const handleDelete = async (id_package) => {
+  const handleDelete = async (id) => {
     Modal.confirm({
       title: "Confirm Delete",
       content: "Are you sure you want to delete this package?",
@@ -127,7 +199,20 @@ export default function PackagesPage() {
       onOk: async () => {
         setLoading(true)
         try {
-          await authenticatedFetch(`/packages/${id_package}/`, { method: "DELETE" })
+          const authToken = localStorage.getItem("authToken")
+
+          const response = await fetch(`${API_PRODUK}${id}/`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              ...(authToken && { Authorization: `Token ${authToken}` }),
+            },
+          })
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+
           message.success("Package deleted successfully!")
           fetchPackagesAndPtPrice()
         } catch (error) {
@@ -145,21 +230,42 @@ export default function PackagesPage() {
       setLoading(true)
 
       const packageData = {
-        ...values,
-        duration_days: values.durationDays,
+        nama_paket: values.nama_paket,
+        fitur_paket: values.fitur_paket || [],
+        harga: values.harga,
+        durasi_hari: values.durasi_hari,
+        is_active: values.is_active !== undefined ? values.is_active : true,
       }
+
+      const authToken = localStorage.getItem("authToken")
 
       let response
       if (editingPackage) {
-        await authenticatedFetch(`/packages/${editingPackage.id_package}/`, {
+        response = await fetch(`${API_PRODUK}${editingPackage.id}/`, {
           method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...(authToken && { Authorization: `Token ${authToken}` }),
+          },
           body: JSON.stringify(packageData),
         })
         message.success("Package updated successfully!")
       } else {
-        await authenticatedFetch("/packages/", { method: "POST", body: JSON.stringify(packageData) })
+        response = await fetch(API_PRODUK, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(authToken && { Authorization: `Token ${authToken}` }),
+          },
+          body: JSON.stringify(packageData),
+        })
         message.success("Package added successfully!")
       }
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       setIsModalVisible(false)
       form.resetFields()
       setEditingPackage(null)
@@ -182,7 +288,22 @@ export default function PackagesPage() {
     try {
       const values = await form.validateFields()
       setLoading(true)
-      await authenticatedFetch("/pt-price/", { method: "PUT", body: JSON.stringify({ newPrice: values.ptPrice }) })
+
+      const authToken = localStorage.getItem("authToken")
+
+      const response = await fetch("/api/pt-price/", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(authToken && { Authorization: `Token ${authToken}` }),
+        },
+        body: JSON.stringify({ newPrice: values.ptPrice }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       message.success("Personal Trainer price updated successfully!")
       setIsPtPriceModalVisible(false)
       fetchPackagesAndPtPrice()
@@ -261,7 +382,7 @@ export default function PackagesPage() {
           scroll={{ x: 800 }}
           className="gym-table"
           loading={loading}
-          rowKey="id_package"
+          rowKey="id"
         />
       </Card>
 
@@ -271,30 +392,45 @@ export default function PackagesPage() {
         open={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
-        width={600}
+        width={700}
         confirmLoading={loading}
         okText={editingPackage ? "Update Package" : "Add Package"}
         cancelText="Cancel"
       >
         <Form form={form} layout="vertical" name="packageForm">
           <Form.Item
-            name="name"
+            name="nama_paket"
             label="Package Name"
-            rules={[{ required: true, message: "Please enter package name" }]}
+            rules={[{ required: true, message: "Please select package name" }]}
           >
-            <Input placeholder="e.g., Basic Package" size="large" />
+            <Select placeholder="Select package name" size="large">
+              {PAKET_CHOICES.map((choice) => (
+                <Option key={choice.value} value={choice.value}>
+                  {choice.label}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
+
           <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true, message: "Please enter package description" }]}
+            name="fitur_paket"
+            label="Package Features"
+            rules={[{ required: true, message: "Please add at least one feature" }]}
+            help="Add package features (press Enter to add each feature)"
           >
-            <Input.TextArea rows={3} placeholder="Describe package features" />
+            <Select
+              mode="tags"
+              style={{ width: "100%" }}
+              placeholder="Add package features (e.g., Akses gym 24/7, Locker gratis, etc.)"
+              size="large"
+              tokenSeparators={[","]}
+            />
           </Form.Item>
+
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="durationDays"
+                name="durasi_hari"
                 label="Duration (Days)"
                 rules={[{ required: true, message: "Please enter duration" }]}
               >
@@ -302,18 +438,22 @@ export default function PackagesPage() {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="price" label="Price (IDR)" rules={[{ required: true, message: "Please enter price" }]}>
+              <Form.Item name="harga" label="Price (IDR)" rules={[{ required: true, message: "Please enter price" }]}>
                 <InputNumber
                   min={0}
                   formatter={(value) => `Rp ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                   parser={(value) => value.replace(/Rp\s?|(,*)/g, "")}
-                  placeholder="e.g., 150000"
+                  placeholder="e.g., 299000"
                   style={{ width: "100%" }}
                   size="large"
                 />
               </Form.Item>
             </Col>
           </Row>
+
+          <Form.Item name="is_active" valuePropName="checked" label="Is Active">
+            <Switch defaultChecked />
+          </Form.Item>
         </Form>
       </Modal>
 

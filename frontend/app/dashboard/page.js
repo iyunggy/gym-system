@@ -69,10 +69,10 @@ export default function Home() {
     { key: "dashboard", icon: <BarChartOutlined />, label: "Dashboard" },
     { key: "members", icon: <UserOutlined />, label: "Members" },
     { key: "trainers", icon: <TeamOutlined />, label: "Personal Trainers" },
-    { key: "schedules", icon: <CalendarOutlined />, label: "Schedules" },
+    // { key: "schedules", icon: <CalendarOutlined />, label: "Schedules" },
     { key: "transactions", icon: <DollarOutlined />, label: "Transactions" },
     { key: "packages", icon: <TrophyOutlined />, label: "Packages" },
-    { key: "settings", icon: <SettingOutlined />, label: "Settings" },
+    // { key: "settings", icon: <SettingOutlined />, label: "Settings" },
   ]
 
   return (

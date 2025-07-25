@@ -299,7 +299,7 @@ export default function OrderDetailPage() {
                     1. Buka aplikasi e-wallet atau mobile banking Anda
                   </Paragraph>
                   <Paragraph style={{ color: "#4B5563", marginBottom: "8px" }}>
-                    2. Pilih menu "Scan QR" atau "Bayar dengan QR"
+                    2. Pilih menu &quot;Scan QR&quot; atau &quot;Bayar dengan QR&quot;
                   </Paragraph>
                   <Paragraph style={{ color: "#4B5563", marginBottom: "8px" }}>
                     3. Arahkan kamera ke QR Code di atas

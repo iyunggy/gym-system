@@ -42,11 +42,11 @@ export default function GymLayout({ children }) {
       icon: <TeamOutlined />,
       label: <Link href="/dashboard/trainers">Personal Trainers</Link>,
     },
-    {
-      key: "/dashboard/schedules",
-      icon: <CalendarOutlined />,
-      label: <Link href="/dashboard/schedules">Schedules</Link>,
-    },
+    // {
+    //   key: "/dashboard/schedules",
+    //   icon: <CalendarOutlined />,
+    //   label: <Link href="/dashboard/schedules">Schedules</Link>,
+    // },
     {
       key: "/dashboard/transactions", // Tambahkan ini
       icon: <DollarOutlined />, // Gunakan DollarOutlined
@@ -57,11 +57,11 @@ export default function GymLayout({ children }) {
       icon: <TrophyOutlined />,
       label: <Link href="/dashboard/packages">Packages & Promos</Link>,
     },
-    {
-      key: "/dashboard/settings",
-      icon: <SettingOutlined />,
-      label: <Link href="/dashboard/settings">Settings</Link>,
-    },
+    // {
+    //   key: "/dashboard/settings",
+    //   icon: <SettingOutlined />,
+    //   label: <Link href="/dashboard/settings">Settings</Link>,
+    // },
   ]
 
   const userMenuItems = [

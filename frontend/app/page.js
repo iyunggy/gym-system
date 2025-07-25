@@ -293,7 +293,7 @@ export default function HomePage() {
                       <StarFilled key={i} style={{ color: "#3B82F6", marginRight: "4px" }} />
                     ))}
                   </div>
-                  <Paragraph style={{ color: "#6B7280", marginBottom: "16px" }}>"{testimonial.content}"</Paragraph>
+                  <Paragraph style={{ color: "#6B7280", marginBottom: "16px" }}>&quot;{testimonial.content}&quot;</Paragraph>
                   <Space size="middle">
                     <div
                       style={{
