@@ -10,7 +10,7 @@ router.register(r'produk', views.ProdukViewSet)
 # router.register(r'promo', PromoViewSet)
 router.register(r'personal-trainers', views.PersonalTrainerViewSet)
 router.register(r'jadwal-pt', views.JadwalPersonalTrainerViewSet)
-# router.register(r'transaksi', TransaksiViewSet)
+router.register(r'transaksis', views.TransaksisViewSet)
 # router.register(r'membership-history', MembershipHistoryViewSet)
 # router.register(r'pt-sessions', PTSessionViewSet)
 

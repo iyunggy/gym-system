@@ -190,7 +190,8 @@ class TransaksiSerializer(serializers.ModelSerializer):
 
 class TransaksiSerializer(serializers.ModelSerializer):
     product_detail = ProdukSerializer(source='produk', read_only=True)
-
+    member_detail = UserLoginSerializer(source='member', read_only=True)
+    pt_detail = UserLoginSerializer(source='pt', read_only=True)
     
     class Meta:
         model = models.Transaksi

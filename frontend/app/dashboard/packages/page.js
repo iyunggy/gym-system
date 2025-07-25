@@ -17,7 +17,6 @@ import {
   Tooltip,
   Select,
   Tag,
-  Switch,
 } from "antd"
 import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined, SearchOutlined } from "@ant-design/icons"
 import { API_PRODUK } from "@/utils/endPoint"
@@ -41,6 +40,51 @@ export default function PackagesPage() {
     { value: "Power Boost", label: "Power Boost" },
     { value: "Ultimate Transform", label: "Ultimate Transform" },
   ]
+
+  // Rekomendasi fitur untuk setiap paket
+  const FEATURE_RECOMMENDATIONS = {
+    "Stater Pack": [
+      "Akses gym 24/7",
+      "Locker gratis",
+      "1x konsultasi trainer",
+      "Akses cardio zone",
+      "Welcome kit",
+      "Basic equipment access",
+      "Shower facilities",
+      "Free parking",
+    ],
+    "Power Boost": [
+      "Semua fasilitas Starter",
+      "Unlimited group classes",
+      "3x personal training",
+      "Akses sauna & steam",
+      "Nutrition consultation",
+      "Progress tracking app",
+      "Zumba & Dance classes",
+      "Yoga & Pilates",
+      "HIIT Training",
+      "Body composition analysis",
+      "Meal planning guide",
+      "Premium locker",
+    ],
+    "Ultimate Transform": [
+      "Semua fasilitas Power Boost",
+      "Unlimited personal training",
+      "Priority booking",
+      "Guest pass (2x/bulan)",
+      "Meal plan consultation",
+      "VIP locker room access",
+      "Exclusive member events",
+      "Dedicated trainer",
+      "Custom workout plan",
+      "Supplement consultation",
+      "Recovery massage (1x/month)",
+      "Premium towel service",
+      "Exclusive training hours",
+      "Nutritionist consultation",
+      "Fitness assessment monthly",
+    ],
+  }
 
   useEffect(() => {
     fetchPackagesAndPtPrice()
@@ -104,7 +148,7 @@ export default function PackagesPage() {
   const columns = [
     {
       title: "Package Name",
-      dataIndex: "nama_paket", // Sesuai dengan model Django
+      dataIndex: "nama_paket",
       key: "nama_paket",
       render: (text, record) => (
         <div>
@@ -115,7 +159,7 @@ export default function PackagesPage() {
     },
     {
       title: "Package Features",
-      dataIndex: "fitur_paket", // Sesuai dengan model Django
+      dataIndex: "fitur_paket",
       key: "fitur_paket",
       render: (features) => {
         if (!features || !Array.isArray(features) || features.length === 0) {
@@ -139,22 +183,16 @@ export default function PackagesPage() {
     },
     {
       title: "Duration (Days)",
-      dataIndex: "durasi_hari", // Sesuai dengan model Django
+      dataIndex: "durasi_hari",
       key: "durasi_hari",
       align: "center",
     },
     {
       title: "Price (IDR)",
-      dataIndex: "harga", // Sesuai dengan model Django
+      dataIndex: "harga",
       key: "harga",
       render: (price) => `Rp ${Number.parseFloat(price).toLocaleString("id-ID")}`,
       align: "right",
-    },
-    {
-      title: "Status",
-      dataIndex: "is_active", // Sesuai dengan model Django
-      key: "is_active",
-      render: (isActive) => <Tag color={isActive ? "green" : "red"}>{isActive ? "Active" : "Inactive"}</Tag>,
     },
     {
       title: "Actions",
@@ -185,7 +223,6 @@ export default function PackagesPage() {
       fitur_paket: record.fitur_paket || [],
       harga: record.harga,
       durasi_hari: record.durasi_hari,
-      is_active: record.is_active,
     })
     setIsModalVisible(true)
   }
@@ -234,7 +271,6 @@ export default function PackagesPage() {
         fitur_paket: values.fitur_paket || [],
         harga: values.harga,
         durasi_hari: values.durasi_hari,
-        is_active: values.is_active !== undefined ? values.is_active : true,
       }
 
       const authToken = localStorage.getItem("authToken")
@@ -319,6 +355,21 @@ export default function PackagesPage() {
     setIsPtPriceModalVisible(false)
   }
 
+  // Handle package name change to update feature recommendations
+  const handlePackageNameChange = (value) => {
+    const recommendations = FEATURE_RECOMMENDATIONS[value] || []
+    form.setFieldsValue({
+      nama_paket: value,
+      fitur_paket: recommendations, // Auto-populate with recommendations
+    })
+  }
+
+  // Get current package recommendations for display
+  const getCurrentRecommendations = () => {
+    const selectedPackage = form.getFieldValue("nama_paket")
+    return FEATURE_RECOMMENDATIONS[selectedPackage] || []
+  }
+
   return (
     <div className="fade-in">
       <div style={{ marginBottom: "24px" }}>
@@ -326,30 +377,6 @@ export default function PackagesPage() {
         <Paragraph>Manage your gym membership packages and personal trainer pricing.</Paragraph>
       </div>
 
-      {/* PT Price Card */}
-      <Card title="Personal Trainer Pricing" className="gym-card" style={{ marginBottom: "24px" }}>
-        <Row align="middle" justify="space-between">
-          <Col>
-            <Space>
-              <Paragraph style={{ margin: 0, fontSize: "1.1em" }}>
-                Current PT Session Price: <Text strong>Rp {ptPrice.toLocaleString("id-ID")}</Text>
-              </Paragraph>
-            </Space>
-          </Col>
-          <Col>
-            <Button
-              type="primary"
-              icon={<EditOutlined />}
-              onClick={() => {
-                form.setFieldsValue({ ptPrice: ptPrice })
-                setIsPtPriceModalVisible(true)
-              }}
-            >
-              Edit PT Price
-            </Button>
-          </Col>
-        </Row>
-      </Card>
 
       {/* Packages Table */}
       <Card title="Membership Packages" className="gym-card">
@@ -392,7 +419,7 @@ export default function PackagesPage() {
         open={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
-        width={700}
+        width={800}
         confirmLoading={loading}
         okText={editingPackage ? "Update Package" : "Add Package"}
         cancelText="Cancel"
@@ -403,7 +430,12 @@ export default function PackagesPage() {
             label="Package Name"
             rules={[{ required: true, message: "Please select package name" }]}
           >
-            <Select placeholder="Select package name" size="large">
+            <Select
+              placeholder="Select package name"
+              size="large"
+              onChange={handlePackageNameChange}
+              disabled={!!editingPackage} // Disable when editing
+            >
               {PAKET_CHOICES.map((choice) => (
                 <Option key={choice.value} value={choice.value}>
                   {choice.label}
@@ -416,15 +448,24 @@ export default function PackagesPage() {
             name="fitur_paket"
             label="Package Features"
             rules={[{ required: true, message: "Please add at least one feature" }]}
-            help="Add package features (press Enter to add each feature)"
+            help="You can select from recommendations, add custom features, or mix both"
           >
             <Select
               mode="tags"
               style={{ width: "100%" }}
-              placeholder="Add package features (e.g., Akses gym 24/7, Locker gratis, etc.)"
+              placeholder="Select or type package features"
               size="large"
+              allowClear
+              showSearch
               tokenSeparators={[","]}
-            />
+              filterOption={(input, option) => option?.children?.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            >
+              {getCurrentRecommendations().map((feature) => (
+                <Option key={feature} value={feature}>
+                  {feature}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Row gutter={16}>
@@ -451,9 +492,25 @@ export default function PackagesPage() {
             </Col>
           </Row>
 
-          <Form.Item name="is_active" valuePropName="checked" label="Is Active">
-            <Switch defaultChecked />
-          </Form.Item>
+          {/* Feature Recommendations Preview */}
+          {form.getFieldValue("nama_paket") && (
+            <Card
+              size="small"
+              title={`Recommended Features for ${form.getFieldValue("nama_paket")}`}
+              style={{ marginTop: "16px", backgroundColor: "#f8f9fa" }}
+            >
+              <div style={{ maxHeight: "150px", overflowY: "auto" }}>
+                {getCurrentRecommendations().map((feature, index) => (
+                  <Tag key={index} color="blue" style={{ marginBottom: "4px", marginRight: "4px" }}>
+                    {feature}
+                  </Tag>
+                ))}
+              </div>
+              <Text type="secondary" style={{ fontSize: "12px", marginTop: "8px", display: "block" }}>
+                💡 Tip: You can select these recommendations or type your own custom features
+              </Text>
+            </Card>
+          )}
         </Form>
       </Modal>
 
