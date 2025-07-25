@@ -35,9 +35,11 @@ import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   ExclamationCircleOutlined,
+  MessageOutlined,
 } from "@ant-design/icons"
-import { API_PROMO, API_PRODUK } from "@/utils/endPoint"
+import { API_PROMO, API_PRODUK, API_MEMBERS } from "@/utils/endPoint"
 import dayjs from "dayjs"
+import axios from "axios"
 
 const { Title, Paragraph, Text } = Typography
 const { Search } = Input
@@ -78,7 +80,6 @@ export default function PromoManagement() {
       }
 
       const data = await response.json()
-      console.log("🚀 ~ fetchPromos ~ data:", data)
 
       if (data && typeof data === "object" && Array.isArray(data.results)) {
         setPromos(data.results)
@@ -304,6 +305,16 @@ export default function PromoManagement() {
               style={{ color: record.is_active ? "#ff4d4f" : "#52c41a" }}
             />
           </Tooltip>
+          <Tooltip title="Send WhatsApp Broadcast">
+            <Button
+              type="text"
+              icon={<MessageOutlined />}
+              size="small"
+              onClick={() => handleSendWhatsAppBroadcast(record)}
+              style={{ color: "#25D366" }}
+              // disabled={!record.is_active}
+            />
+          </Tooltip>
         </Space>
       ),
     },
@@ -366,6 +377,7 @@ export default function PromoManagement() {
   }
 
   const handleToggleStatus = async (record) => {
+    console.log("Toggle status for:", record.id)
     setLoading(true)
     try {
       const authToken = localStorage.getItem("authToken")
@@ -390,6 +402,164 @@ export default function PromoManagement() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleSendWhatsAppBroadcast = async (record) => {
+    console.log("🚀 ~ handleSendWhatsAppBroadcast ~ record:", record)
+    console.log("🚀 Starting WhatsApp broadcast for:", record.nama_promo)
+
+    Modal.confirm({
+      title: "Send WhatsApp Broadcast",
+      content: `Are you sure you want to send WhatsApp broadcast for "${record.nama_promo}" to all members?`,
+      okText: "Send Broadcast",
+      okType: "primary",
+      onOk: async () => {
+        const loadingMessage = message.loading("Preparing WhatsApp broadcast...", 0)
+
+        try {
+          const authToken = localStorage.getItem("authToken")
+          console.log("🔑 Auth token:", authToken ? "Available" : "Not available")
+
+          // First, get all members
+          console.log("📞 Fetching members from:", API_MEMBERS)
+          const membersResponse = await fetch(API_MEMBERS, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              ...(authToken && { Authorization: `Token ${authToken}` }),
+            },
+          })
+
+          console.log("📊 Members response status:", membersResponse.status)
+
+          if (!membersResponse.ok) {
+            throw new Error(`Failed to fetch members: HTTP ${membersResponse.status}`)
+          }
+
+          const membersData = await membersResponse.json()
+          console.log("🚀 Members data received:", membersData)
+
+          const members = membersData.results || membersData || []
+          console.log("👥 Total members found:", members.length)
+
+          if (members.length === 0) {
+            loadingMessage()
+            message.warning("No members found to send broadcast")
+            return
+          }
+
+          // Check if members have phone numbers
+          const membersWithPhone = members.filter((member) => member)
+          console.log("🚀 ~ handleSendWhatsAppBroadcast ~ membersWithPhone:", membersWithPhone)
+          console.log("📱 Members with phone numbers:", membersWithPhone.length)
+
+          if (membersWithPhone.length === 0) {
+            loadingMessage()
+            message.warning("No members with phone numbers found")
+            return
+          }
+
+          // Prepare WhatsApp message
+          const whatsappMessage = `🏋️‍♂️ *GYMEASE PROMO ALERT* 🏋️‍♂️
+---------------------------------
+*PROMO SPESIAL UNTUK MEMBER*
+---------------------------------
+
+Halo member GymEase! 👋
+
+Ada kabar gembira dari GymEase! 🎉
+Ada promo nih:
+
+📢 *${record?.nama_promo}*
+💰 *Potongan ${record?.diskon_persen.toString()}% OFF*
+📦 *Paket: ${record?.product_detail?.nama_paket || "N/A"}*
+
+${record?.deskripsi ? `📝 *Detail:*\n${record?.deskripsi}` : ""}
+
+⏰ *Berlaku sampai: ${record?.tanggal_berakhir ? dayjs(record?.tanggal_berakhir).format("DD/MM/YYYY") : "Terbatas"}*
+
+Jangan sampai terlewat ya! 🔥
+Buruan daftar sekarang! 💪
+
+_Salam sehat,_
+_Tim GymEase_ 🏃‍♀️`
+
+          console.log("💬 WhatsApp message prepared:", whatsappMessage.substring(0, 100) + "...")
+
+          // Update loading message
+          loadingMessage()
+          const sendingMessage = message.loading(`Sending WhatsApp to ${membersWithPhone.length} members...`, 0)
+
+          // Send broadcast to all members
+          let successCount = 0
+          let failCount = 0
+
+          for (let i = 0; i < membersWithPhone.length; i++) {
+            const member = membersWithPhone[i]
+            console.log("🚀 ~ handleSendWhatsAppBroadcast ~ membersWithPhone:", membersWithPhone)
+
+            try {
+              // Format phone number (ensure it starts with 62)
+              let formattedPhone = member.profile.phone
+
+              if (formattedPhone.startsWith("0")) {
+                formattedPhone = "62" + formattedPhone.substring(1)
+              } else if (!formattedPhone.startsWith("62")) {
+                formattedPhone = "62" + formattedPhone
+              }
+
+              console.log(
+                `📤 Sending to member ${i + 1}/${membersWithPhone.length}: ${member.nama} (${formattedPhone})`,
+              )
+
+              const whatsappResponse = await axios.post(
+                "https://payment-notif.maleotech.id/broadcastwhatsapp/personal",
+                {
+                  phone: formattedPhone,
+                  message: whatsappMessage,
+                },
+                {
+                  timeout: 10000, // 10 second timeout
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                },
+              )
+
+              console.log(`✅ Success for ${member.nama}:`, whatsappResponse.status)
+              successCount++
+
+              // Update progress
+              sendingMessage()
+              message.loading(`Sent ${successCount}/${membersWithPhone.length} messages...`, 0.1)
+
+              // Add delay to avoid rate limiting
+              if (i < membersWithPhone.length - 1) {
+                await new Promise((resolve) => setTimeout(resolve, 1000)) // 1 second delay
+              }
+            } catch (error) {
+              console.error(`❌ Failed to send to ${member.nama} (${member.phone}):`, error.message)
+              failCount++
+            }
+          }
+
+          sendingMessage()
+
+          // Show final result
+          if (successCount > 0) {
+            message.success(`WhatsApp broadcast completed! ✅ Success: ${successCount}, ❌ Failed: ${failCount}`)
+          } else {
+            message.error(`WhatsApp broadcast failed! All ${failCount} messages failed to send.`)
+          }
+
+          console.log("📊 Final results - Success:", successCount, "Failed:", failCount)
+        } catch (error) {
+          loadingMessage()
+          console.error("💥 WhatsApp broadcast error:", error)
+          message.error("Error sending WhatsApp broadcast: " + error.message)
+        }
+      },
+    })
   }
 
   const handleModalOk = async () => {

@@ -10,3 +10,5 @@ export const API_TRANSAKSIDETAIL =  `${BASEURL}/api/transaksi-detail/`;
 export const API_MEMBERS =  `${BASEURL}/api/members/`;
 export const API_PERSONAL_TRAINER =  `${BASEURL}/api/personal-trainers/`;
 export const API_ALL_TRANSAKSI =  `${BASEURL}/api/transaksis/`;
+export const API_PROMO =  `${BASEURL}/api/promo/`;
+export const API_JADWALTRAINER =  `${BASEURL}/api/pt-sessions/`;
