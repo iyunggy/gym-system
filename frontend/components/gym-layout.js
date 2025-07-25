@@ -83,6 +83,8 @@ export default function GymLayout({ children }) {
       icon: <LogoutOutlined />,
       label: "Logout",
       danger: true,
+      key: "/",
+
     },
   ]
 

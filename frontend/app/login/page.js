@@ -14,6 +14,7 @@ import {
 } from "antd";
 import { UserOutlined, LockOutlined, FireOutlined } from "@ant-design/icons";
 import { BASE_API_URL } from "@/lib/contants";
+import { API_LOGIN } from "@/utils/endPoint";
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
@@ -25,7 +26,7 @@ export default function LoginPage() {
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const response = await fetch(`${BASE_API_URL}/auth/token/`, {
+      const response = await fetch(`${API_LOGIN}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,9 +40,15 @@ export default function LoginPage() {
       }
 
       const data = await response.json();
-      localStorage.setItem("authToken", data.token); // Simpan token di localStorage
+      // localStorage.setItem("authToken", data.token); // Simpan token di localStorage
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("userData", JSON.stringify(data.user));
       message.success("Login successful!");
-      router.push("/dashboard"); // Arahkan ke dashboard
+      if (data.user.profile.role === "member") {
+        router.push("/");
+      } else {
+        router.push("/dashboard"); // Arahkan ke dashboard
+      }
     } catch (error) {
       message.error("Login failed: " + error.message);
     } finally {
